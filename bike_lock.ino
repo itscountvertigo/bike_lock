@@ -1,11 +1,11 @@
 #include <SoftwareSerial.h>
 #include <Servo.h>
 
-SoftwareSerial HM10(10, 11);                // pins are probably going to change
+SoftwareSerial HM10(10, 11);                  // Note that pin 10 is RX, pin 11 is TX, but they have to be wired to servo's TX and RX respectively (opposite ends!)
 Servo lockServo;
 
 String serialMessage;
-int servoPos = 0;
+//int servoPos = 0;
 bool locked = true;
 
 void setup() {
@@ -17,32 +17,19 @@ void setup() {
 
 void loop() {
   HM10.listen();
-//  Serial.println(HM10.read());
 
   while (HM10.available() > 0) {
     serialMessage = HM10.readStringUntil('\n');
-    Serial.println(serialMessage);
+    Serial.println(serialMessage);              // Debugging purposes only
     
   }
   
   if (serialMessage == 'U') {
-    lockServo.write(90);                      // Make the servo move to the half-way position
-    delay(1000);                               // Wait to be sure the servo and the spring did their work
-    lockServo.write(180);                     // Close the servo again, so if the lock is pushed into a closing position it will be locked
+    lockServo.write(90);                        // Make the servo move to the half-way position
+    delay(1000);                                // Wait to be sure the servo and the spring did their work
+    lockServo.write(180);                       // Close the servo again, so if the lock is pushed into a closing position it will be locked
+                                                // Note that the specific servo movements may change, this is still a placeholder before testing
   }
   
   // add other commands such as linking an account or setting up a password (TODO)
 }
-/*
-bool unlock() {
-  // Returns 1 if successful, returns 0 if already locked:
-  if (locked) {
-    return false;
-  }
-
-  lockServo.write(90);                      // Make the servo move to the half-way position
-  delay(100);                               // Wait to be sure the servo and the spring did their work
-  lockServo.write(180);                     // Close the servo again, so if the lock is pushed into a closing position it will be locked
-
-  return true;
-}*/
